@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import ButtonSection from '../Components/ButtonSection'
 import Input from '../Components/Input'
+import './Form.css'
 function Form() {
     const [inputs, setInputs] = useState({
         first_name: '',
@@ -10,7 +11,7 @@ function Form() {
         password: '',
         gender:''
     });
-    const [isValid,setIsValid]=useState(false)
+    
     const [inputError, setInputError] = useState({
         first_name_error: '',
         last_name_error: '',
@@ -20,39 +21,59 @@ function Form() {
             });
     const [items, setItems] = useState([])
 
+    const [isValid,setIsValid]=useState(true)
+
     const handleInputChange = (e) => {
         setInputs({ ...inputs, [e.target.name]: e.target.value });
     };
 
 
-    const handleSubmit = () => {
+   const  handleValidate = () => {
+      var first_name_error= '';
+      var last_name_error= '';
+      var  email_error= '';
+       var mobile_error='';
+       var password_error = '';
+        var phoneno = /^\d{10}$/;
+        var email_reg ="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+        var pass='^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
         if (inputs.first_name.length <= 2 || inputs.first_name.length >= 10) {
-            setInputError({ first_name_error:'Firstname Error' })
-            setIsValid(false)
+            setIsValid(false);
+            first_name_error='Firstname Error'
+            
         }
         if (inputs.last_name.length <= 2 || inputs.last_name.length >= 10) {
-            setInputError({  last_name_error:'lastName Error' })
-            setIsValid(false)
+            setIsValid(false);
+           
+            last_name_error='lastName Error' 
         }
-        var phoneno = /^\d{10}$/;
+        
         if (!inputs.mobile.match(phoneno)) {
-            setInputError({mobile_error:'Mobile Error' })
-            setIsValid(false)
+            setIsValid(false);
+            mobile_error='Mobile Error' 
         }
-        var email_reg ="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+       
         if(!inputs.email.match(email_reg)){
-            setInputError({email_error:'Email Error' })
-            setIsValid(false)
+          setIsValid(false);
+           email_error='Email Error'
         }
-        var pass='^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        
         if(!inputs.password.match(pass)){
-            setInputError({password_error:'PAssword Error' })
-            setIsValid(false)
+            setIsValid(false);
+           password_error='PAssword Error' 
+
         }
-        else{
-            setIsValid(true)
-        }
-        if(isValid === true){
+        setInputError({
+            first_name_error:first_name_error,
+            last_name_error:last_name_error,
+            email_error:email_error,
+            mobile_error:mobile_error,
+            password_error:password_error
+        })
+        return isValid;
+    }
+    const handleSubmit=()=>{
+        if(handleValidate()){
             setItems((oldItems) => {
                 return [...oldItems, inputs]
             })
@@ -65,8 +86,9 @@ function Form() {
                 password:''
             })
         }
-        
-        
+        else{
+            alert('please fill the form correclty')
+        }
     }
     const handleDelete=(id)=>{
         setItems((oldItems)=>{
@@ -78,16 +100,16 @@ function Form() {
     }
 
     return (
-        <div>
-            <div>
+        <div className="form">
+            <div className="input">
                 <label className='first_name' >FirstName</label>
                 <Input name='first_name' value={inputs.first_name} type='text' onChange={handleInputChange} />
-    <label>{inputError.first_name_error}</label>
+                <span style={{color: "red"}}>{inputError.first_name_error}</span>
             </div>
             <div>
                 <label className='last_name' >LastName</label>
                 <Input name='last_name' type='text' value={inputs.last_name} onChange={handleInputChange} />
-                <label>{inputError.last_name_error}</label>
+                <span style={{color: "red"}}>{inputError.last_name_error}</span>
             </div>
 
             <div>
@@ -99,17 +121,17 @@ function Form() {
             <div>
                 <label className='email' >Email</label>
                 <Input name='email' type='email' value={inputs.email} onChange={handleInputChange} />
-                <label>{inputError.email_error}</label>
+                <span style={{color: "red"}}>{inputError.email_error}</span>
             </div>
             <div>
                 <label className='mobile' >Mobile</label>
                 <Input name='mobile' type='number' value={inputs.mobile} onChange={handleInputChange} />
-                <label>{inputError.mobile_error}</label>
+                <span style={{color: "red"}}>{inputError.mobile_error}</span>
             </div>
             <div>
                 <label className='password' >Password</label>
                 <Input name='password' type='text' value={inputs.password} onChange={handleInputChange} />
-                <label>{inputError.password_error}</label>
+                <span style={{color: "red"}}>{inputError.password_error}</span>
             </div>
             <div>
                 <ButtonSection name='Signup' value='Signup' type='submit' onClick={() => handleSubmit()} />
