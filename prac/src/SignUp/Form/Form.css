@@ -1,0 +1,47 @@
+
+
+input {
+    margin-top: 7px;
+    margin-bottom: 5px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: -80%;
+}
+table,th,td{
+    border: 1px solid #ddd;
+}
+
+.label {
+    display: inline;
+    padding-top: 5px;
+    margin-left: 10px;
+    text-align: right;
+    float: left;
+    margin-right: 15px;
+}
+.button{
+    display: flex;
+    padding: 10px;
+    left: 150px;
+    position: relative;
+}
+
+   
+  .radio {
+    display:-webkit-box !important; 
+    display:-ms-flexbox !important; 
+    display:flex !important;  
+    padding-top:10px;
+    position: relative;
+    left: 4%;
+    }
+
+    .radio label{
+        margin-left:10px !important; 
+        margin-right:40px !important; 
+    }
+    .radio input {
+        width:auto !important;
+        margin-right:2px !important;
+        margin-left: 10px;
+    }

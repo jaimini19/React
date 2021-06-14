@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import ButtonSection from '../Components/ButtonSection'
-import Input from '../Components/Input'
+import { ButtonSection, Input } from '../Components/components'
 import './Form.css'
+
 function Form() {
     const [inputs, setInputs] = useState({
         first_name: '',
@@ -9,165 +9,167 @@ function Form() {
         email: '',
         mobile: '',
         password: '',
-        gender:''
+        gender: ''
     });
-    
     const [inputError, setInputError] = useState({
         first_name_error: '',
         last_name_error: '',
         email_error: '',
         mobile_error: '',
         password_error: '',
-            });
-    const [items, setItems] = useState([])
+    });
 
-    const [isValid,setIsValid]=useState(true)
+    const [items, setItems] = useState([])
 
     const handleInputChange = (e) => {
         setInputs({ ...inputs, [e.target.name]: e.target.value });
     };
+    const handleValidate = () => {
+        const inputError= {
+            first_name_error: '',
+            last_name_error: '',
+            email_error: '',
+            mobile_error: '',
+            password_error: '',
+        };
 
-
-   const  handleValidate = () => {
-      var first_name_error= '';
-      var last_name_error= '';
-      var  email_error= '';
-       var mobile_error='';
-       var password_error = '';
         var phoneno = /^\d{10}$/;
-        var email_reg ="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
-        var pass='^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
+        var email_reg = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
+        var pass = '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$'
         if (inputs.first_name.length <= 2 || inputs.first_name.length >= 10) {
-            setIsValid(false);
-            first_name_error='Firstname Error'
-            
+           inputError.first_name_error = 'Firstname Error'
         }
         if (inputs.last_name.length <= 2 || inputs.last_name.length >= 10) {
-            setIsValid(false);
-           
-            last_name_error='lastName Error' 
+           inputError.last_name_error = 'lastName Error'
         }
-        
-        if (!inputs.mobile.match(phoneno)) {
-            setIsValid(false);
-            mobile_error='Mobile Error' 
-        }
-       
-        if(!inputs.email.match(email_reg)){
-          setIsValid(false);
-           email_error='Email Error'
-        }
-        
-        if(!inputs.password.match(pass)){
-            setIsValid(false);
-           password_error='PAssword Error' 
 
+        if (!inputs.mobile.match(phoneno)) {
+            inputError.mobile_error = 'Mobile Error'
         }
-        setInputError({
-            first_name_error:first_name_error,
-            last_name_error:last_name_error,
-            email_error:email_error,
-            mobile_error:mobile_error,
-            password_error:password_error
-        })
-        return isValid;
+
+        if (!inputs.email.match(email_reg)) {
+            inputError.email_error = 'Email Error'
+        }
+
+        if (!inputs.password.match(pass)) {
+            inputError.password_error = 'PAssword Error'
+        }
+        if (inputError.first_name_error ||inputError.last_name_error ||inputError.email_error ||
+            inputError.mobile_error || inputError.password_error) {
+            setInputError({
+                first_name_error:inputError.first_name_error,
+                last_name_error:inputError.last_name_error,
+                email_error:inputError.email_error,
+                mobile_error:inputError.mobile_error,
+                password_error:inputError.password_error
+            })
+            return false;
+        }
+        else {
+            return true
+        }
     }
-    const handleSubmit=()=>{
-        if(handleValidate()){
+   
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (handleValidate()) {
+            console.log(inputs)
             setItems((oldItems) => {
                 return [...oldItems, inputs]
             })
             setInputs({
-                first_name:'',
-                last_name:'',
-                email:'',
-                gender:'',
-                mobile:'',
-                password:''
+                first_name: '',
+                last_name: '',
+                email: '',
+                mobile: '',
+                password: '',
+                gender: '',
+
             })
-        }
-        else{
-            alert('please fill the form correclty')
-        }
+            setInputError({
+                first_name_error:'',
+                last_name_error:'',
+                email_error:'',
+                mobile_error:'',
+                password_error:''
+            })
     }
-    const handleDelete=(id)=>{
-        setItems((oldItems)=>{
-            return oldItems.filter((item,index)=>{
-                return index!==id
+}
+    const handleDelete = (id) => {
+        setItems((oldItems) => {
+            return oldItems.filter((item, index) => {
+                return index !== id
 
             })
         })
     }
 
     return (
-        <div className="form">
-            <div className="input">
-                <label className='first_name' >FirstName</label>
-                <Input name='first_name' value={inputs.first_name} type='text' onChange={handleInputChange} />
-                <span style={{color: "red"}}>{inputError.first_name_error}</span>
-            </div>
-            <div>
-                <label className='last_name' >LastName</label>
-                <Input name='last_name' type='text' value={inputs.last_name} onChange={handleInputChange} />
-                <span style={{color: "red"}}>{inputError.last_name_error}</span>
+        <form onSubmit={handleSubmit}>
+            <div className="form">
+
+                <label className='label' >FirstName</label>
+                <Input type='text' name='first_name' value={inputs.first_name} onChange={handleInputChange} />
+                <span style={{ color: "red" }}>{inputError.first_name_error}</span>
+
+                <label className='label' >LastName</label>
+                <Input name='last_name'  value={inputs.last_name} type='text' onChange={handleInputChange} />
+                <span style={{ color: "red" }}>{inputError.last_name_error}</span>
+
+                <div className="radio">
+                    <Input name='gender' value='male' type='radio' onChange={handleInputChange} />Male
+                <Input name='gender' value='female' type='radio' onChange={handleInputChange} />Female
             </div>
 
-            <div>
-                <label className='male' >Male</label>
-                <Input name='gender' value='male' type='radio' onChange={handleInputChange} />
-                <label className='female' >Female</label>
-                <Input name='gender' value='female' type='radio' onChange={handleInputChange} />
-            </div>
-            <div>
-                <label className='email' >Email</label>
-                <Input name='email' type='email' value={inputs.email} onChange={handleInputChange} />
-                <span style={{color: "red"}}>{inputError.email_error}</span>
-            </div>
-            <div>
-                <label className='mobile' >Mobile</label>
-                <Input name='mobile' type='number' value={inputs.mobile} onChange={handleInputChange} />
-                <span style={{color: "red"}}>{inputError.mobile_error}</span>
-            </div>
-            <div>
-                <label className='password' >Password</label>
-                <Input name='password' type='text' value={inputs.password} onChange={handleInputChange} />
-                <span style={{color: "red"}}>{inputError.password_error}</span>
-            </div>
-            <div>
-                <ButtonSection name='Signup' value='Signup' type='submit' onClick={() => handleSubmit()} />
-            </div>
-            {isValid  &&  <table>
-                <tbody>
-                    <tr>
-                        <th>FirstName</th>
-                        <th>LastName</th>
-                        <th>Gender</th>
-                        <th>Email</th>
-                        <th>PhoneNo</th>
-                        <th>Password</th>
-                        <th>Action</th>
-                    </tr>
+                <label className='label' >Email</label>
+                <Input name='email'  value={inputs.email} type='email' onChange={handleInputChange} />
+                <span style={{ color: "red" }}>{inputError.email_error}</span>
 
-                    {items.map((item,index) => {
-                        return (
-                            <tr key={index}>
-                                <td>{item.first_name}</td>
-                                <td>{item.last_name}</td>
-                                <td>{item.gender}</td>
-                                <td>{item.email}</td>
-                                <td>{item.mobile}</td>
-                                <td>{item.password}</td>
-                        <td>
-                {<ButtonSection name='Delete' value='Delete' type='submit' onClick={() => handleDelete(index)} />}</td>
+                <label className='label' >Mobile</label>
+                <Input name='mobile'  value={inputs.mobile} type='number' onChange={handleInputChange} />
+                <span style={{ color: "red" }}>{inputError.mobile_error}</span>
 
+                <label className='label' >Password</label>
+                <Input name='password'  value={inputs.password} type='text' onChange={handleInputChange} />
+                <span style={{ color: "red" }}>{inputError.password_error}</span>
 
+                <div className="button">
+                    <ButtonSection name='Signup' value='Signup' type='submit' />
+                </div>
+
+                <div className="table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>FirstName</th>
+                                <th>LastName</th>
+                                <th>Gender</th>
+                                <th>Email</th>
+                                <th>PhoneNo</th>
+                                <th>Password</th>
+                                <th>Action</th>
                             </tr>
-                        );
-                    })}
-                </tbody>
-            </table>}
-           
-        </div>
+
+                            {items.map((item, index) => {
+                                return (
+                                    <tr key={index}>
+                                        <td>{item.first_name}</td>
+                                        <td>{item.last_name}</td>
+                                        <td>{item.gender}</td>
+                                        <td>{item.email}</td>
+                                        <td>{item.mobile}</td>
+                                        <td>{item.password}</td>
+                                        <td>
+                                            {<ButtonSection name='Delete' value='Delete' type='submit' onClick={() => handleDelete(index)} />}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </form>
     )
 }
 
